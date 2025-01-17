@@ -1,0 +1,7 @@
+.old_git
+.pio
+.vscode
+host
+*.py
+*.txt
+include/node_info.h

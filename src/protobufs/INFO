@@ -1,0 +1,6 @@
+All files in this directory (`src/protobufs`) are generated protocol buffers from the Meshtastic® firmware,
+which are found [here](https://github.com/meshtastic/protobufs).
+
+I renamed the "meshtastic" directory, which was the directory that the original protocol buffers used, to
+"protobufs" and have not made any further modifications to them to keep consistency for "feathermesh" and the
+Meshtastic® firmware.
