@@ -120,7 +120,7 @@ void receive_task()
     {
         did_receive = true;
 
-        LLOG_DEBUG("Received packet.");
+        LLOG_INFO("Received packet.");
 
         if (packet_length <= sizeof(MeshNetwork_PacketHeader))
         {

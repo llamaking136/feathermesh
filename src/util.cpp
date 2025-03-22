@@ -1,11 +1,10 @@
 #include <util.h>
 #include <network.h>
 
-uint32_t last_rand = 0;
-
 uint32_t generate_random_number(uint32_t max)
 {
-    srand(analogRead(ADC) + micros() + radio.getRSSI(false) + last_rand);
+    static uint32_t last_rand = 0;
+    srand(radio.randomByte() + last_rand);
     last_rand = rand() % max;
     return last_rand;
 }

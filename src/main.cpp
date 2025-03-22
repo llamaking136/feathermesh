@@ -49,7 +49,7 @@ uint32_t did_receive_time = 0;
 uint16_t led_receive_delay = 100;
 
 uint64_t print_timer = 0;
-uint32_t print_delay = 500;
+uint32_t print_delay = 5000;
 
 uint32_t last_irq_value = 0;
 
@@ -145,8 +145,17 @@ void loop()
 {
     // if (millis() >= (print_timer + print_delay))
     // {
-    //     LLOG_DEBUG("analogRead(ADC): %d", analogRead(ADC));
-        
+    //     // LLOG_DEBUG("analogRead(ADC): %d", analogRead(ADC));
+    //     static uint32_t last_random_number = 0;
+    //     uint32_t random_number = generate_random_number(0xFFFFFFFF);
+
+    //     LLOG_DEBUG("Rand: 0x%08x", random_number);
+
+    //     if (random_number == last_random_number)
+    //     {
+    //         LLOG_CRITICAL("last random number and current random number are the same!");
+    //     }
+
     //     print_timer = millis();
     // }
 

@@ -204,6 +204,18 @@ uint8_t memory_info(uint8_t argc, char *argv[])
     return 0;
 }
 
+uint8_t uptime(uint8_t argc, char *argv[])
+{
+    uint64_t uptime_seconds = (uint64_t)(millis() / 1000);
+
+    uint16_t days = (uint16_t)(uptime_seconds / 60 / 60 / 24);
+    uint8_t hours = (uint8_t)((uptime_seconds / 60 / 60) % 24);
+    uint8_t minutes = (uint8_t)((uptime_seconds / 60) % 60);
+
+    LLOG_INFO("Up %u days, %02u:%02u", days, hours, minutes);
+    return 0;
+}
+
 Command __test_command(test_command, "test");
 Command __warranty(show_warranty, "warranty");
 Command __copyright(show_copyright, "copyright");
@@ -212,6 +224,7 @@ Command __list_channels(list_channels, "list_channels");
 Command __gps_info(gps_info, "gps_info");
 Command __battery_info(battery_info, "battery_info");
 Command __memory_info(memory_info, "memory_info");
+Command __uptime(uptime, "uptime");
 
 Command command_lookup_table[] = {
     __test_command,
@@ -221,7 +234,8 @@ Command command_lookup_table[] = {
     __list_channels,
     __gps_info,
     __battery_info,
-    __memory_info
+    __memory_info,
+    __uptime
 };
 
 unsigned int parse_command_line(const char *input, char *argv[])
