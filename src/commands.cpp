@@ -11,7 +11,7 @@
 #include <transmit_queue.h>
 #include <memory.h>
 
-#include "protobufs/mesh.pb.h"
+#include <meshtastic/mesh.pb.h>
 
 
 uint32_t last_received_char_time = 0;
@@ -26,6 +26,8 @@ uint8_t test_command(uint8_t argc, char *argv[])
     
     return 0;
 }
+
+extern uint8_t help_command(uint8_t, char*[]);
 
 uint8_t show_warranty(uint8_t argc, char *argv[])
 {
@@ -43,7 +45,7 @@ uint8_t show_warranty(uint8_t argc, char *argv[])
 
 uint8_t show_copyright(uint8_t argc, char *argv[])
 {
-    LLOG_INFO("Copyright (C) llamaking136 (llama@llamaking.net)  A.D. 2024");
+    LLOG_INFO("Copyright (C) llamaking136 (llama@llamaking.net)  A.D. 2025");
     LLOG_INFO("");
     LLOG_INFO("This program is free software: you can redistribute it and/or modify");
     LLOG_INFO("it under the terms of the GNU General Public License as published by");
@@ -69,7 +71,7 @@ uint8_t show_copyright(uint8_t argc, char *argv[])
 
 void init_show_copyright()
 {
-    LLOG_INFO("Copyright (C) llamaking136 (llama@llamaking.net)  A.D. 2024");
+    LLOG_INFO("Copyright (C) llamaking136 (llama@llamaking.net)  A.D. 2025");
     LLOG_INFO("");
     LLOG_INFO("This program comes with ABSOLUTELY NO WARRANTY; for details type `warranty'.");
     LLOG_INFO("This is free software, and you are welcome to redistribute it");
@@ -196,10 +198,21 @@ uint8_t battery_info(uint8_t argc, char *argv[])
 
 uint8_t memory_info(uint8_t argc, char *argv[])
 {
-    char *shart = (char*)malloc(35);
+    // char *shart = (char*)malloc(40);
 
-    int free_memory = memory_manager.get_free_memory();
-    LLOG_INFO("Free memory: %d", free_memory);
+    size_t max_heap = 0;
+    void* ptr = NULL;
+    size_t step = 8;
+
+    while (true)
+    {
+        ptr = malloc(max_heap + step);
+        if (ptr == NULL) break;
+        free(ptr);
+        max_heap += step;
+    }
+
+    LLOG_INFO("Approximate free heap size: %u bytes.", max_heap);
 
     return 0;
 }
@@ -217,6 +230,7 @@ uint8_t uptime(uint8_t argc, char *argv[])
 }
 
 Command __test_command(test_command, "test");
+Command __help(help_command, "help");
 Command __warranty(show_warranty, "warranty");
 Command __copyright(show_copyright, "copyright");
 Command __send_message(send_message, "send_message");
@@ -228,6 +242,7 @@ Command __uptime(uptime, "uptime");
 
 Command command_lookup_table[] = {
     __test_command,
+    __help,
     __warranty,
     __copyright,
     __send_message,
@@ -237,6 +252,20 @@ Command command_lookup_table[] = {
     __memory_info,
     __uptime
 };
+
+uint8_t help_command(uint8_t argc, char *argv[])
+{
+    LLOG_INFO("A comprehensive list of runnable commands:");
+
+    // clt stands for Command Lookup Table.
+    size_t clt_size = (sizeof(command_lookup_table) / sizeof(Command));
+    for (size_t i = 0; i < clt_size; i++)
+    {
+        LLOG_INFO("%s", command_lookup_table[i].name);
+    }
+
+    return 0;
+}
 
 unsigned int parse_command_line(const char *input, char *argv[])
 {

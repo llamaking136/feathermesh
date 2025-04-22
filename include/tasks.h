@@ -13,7 +13,7 @@
 #include <sensors.h>
 #include <transmit_queue.h>
 
-#include "protobufs/mesh.pb.h"
+#include <meshtastic/mesh.pb.h>
 
 extern CubeCell_NeoPixel led;
 

@@ -160,7 +160,7 @@ void receive_task()
         Channel* channel = find_channel(header.hash);
         if (channel == nullptr)
         {
-            LLOG_WARNING("Got channel hash %02x, but not in list of channels. Not decoding.", header.hash);
+            LLOG_WARNING("Got channel hash %02x, but not in list of channels. Ignoring.", header.hash);
             did_receive = false;
             return;
         }

@@ -27,25 +27,31 @@ void add_channel(uint8_t* name, uint8_t name_length, uint8_t* key, uint8_t key_l
     channels[num_channels].name = (uint8_t*)malloc(MAX_CHANNEL_NAME + 1);
     channels[num_channels].key = (uint8_t*)malloc(key_length);
 
-    memcpy(channels[num_channels].name, name, name_length);
+    memcpy(channels[num_channels].name, name, name_length + 1);
     channels[num_channels].name_length = name_length;
     memcpy(channels[num_channels].key, key, key_length);
     channels[num_channels].key_length = key_length;
     channels[num_channels].hash = calculate_channel_hash(channels[num_channels].name, channels[num_channels].name_length, channels[num_channels].key, channels[num_channels].key_length);
 
-    LLOG_DEBUG("Added channel '%s' to list.", name);
+    LLOG_DEBUG("Added channel '%s' to list.", channels[num_channels].name);
     num_channels++;
 }
 
-void add_channel_b64(uint8_t* name, uint8_t name_length, uint8_t* key)
+void add_channel_b64(const char* name, const char* key)
 {
-    uint8_t key_buffer[32];
+    uint8_t key_buffer[MAX_KEY_SIZE];
     uint8_t key_length = 0;
-    memset(key_buffer, 0, 32);
+    memset(key_buffer, 0, MAX_KEY_SIZE);
 
-    key_length = decode_base64(key, strlen((const char*)key), key_buffer);
+    uint32_t e_key_length = decode_base64_length((uint8_t*)key, strlen(key)) > MAX_KEY_SIZE;
+    if (e_key_length)
+    {
+        LLOG_ERROR("Tried adding channel '%s' to list but key is %u bytes, exceeds maximum length %u bytes!", name, e_key_length, MAX_KEY_SIZE);
+        return;
+    }
+    key_length = decode_base64((uint8_t*)key, strlen(key), key_buffer);
 
-    add_channel(name, name_length, key_buffer, key_length);
+    add_channel((uint8_t*)name, strnlen(name, MAX_CHANNEL_NAME), key_buffer, key_length);
 }
 
 void init_channels()

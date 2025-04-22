@@ -4,7 +4,7 @@
 
 #define MAX_ARGC 16
 #define SERIAL_COMMAND_TERMINATOR '\r'
-#define SERIAL_COMMAND_TIMEOUT 500
+#define SERIAL_COMMAND_TIMEOUT 100
 
 struct Command
 {
@@ -16,6 +16,7 @@ struct Command
         this->function = function;
         this->name = name;
     }
+    ~Command() {}
 };
 
 extern Command command_lookup_table[];

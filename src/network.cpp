@@ -35,6 +35,11 @@ void decode_flags(uint8_t compressed, MeshNetwork_PacketFlags* flags)
     flags->hops = 0b00000111 & compressed;
 }
 
+uint32_t decode_position_precision(uint32_t percision)
+{
+    return 23700000 / pow(2, percision);
+}
+
 // internal buffer output
 static inline void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen)
 {
@@ -155,8 +160,15 @@ bool manage_decoded_packet(int32_t rssi, float snr, MeshNetwork_PacketHeader* he
         {
             return false;
         }
-
-        LLOG_INFO("Satellites: %u  HDOP: %u  Accuracy: %u", position.sats_in_view, position.HDOP, position.gps_accuracy);
+        
+        if (position.precision_bits >= 32)
+        {
+            LLOG_INFO("Satellites: %u  True location", position.sats_in_view);
+        }
+        else
+        {
+            LLOG_INFO("Satellites: %u  Percision: %um", position.sats_in_view, decode_position_precision(position.precision_bits));
+        }
         LLOG_INFO("Epoch: %u", position.time);
         if (!REDACT_POSITIONS)
         {
@@ -165,7 +177,7 @@ bool manage_decoded_packet(int32_t rssi, float snr, MeshNetwork_PacketHeader* he
                 double latitude = (double)position.latitude_i * 1e-7;
                 double longitude = (double)position.longitude_i * 1e-7;
 
-                LLOG_INFO("Latitude: %f  Longitude: %f", latitude, longitude);
+                LLOG_INFO("Lat/Lon: %.07f, %.07f", latitude, longitude);
             }
             if (position.has_altitude)
             {

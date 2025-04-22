@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <RadioLib.h>
 
-#include "protobufs/mesh.pb.h"
+#include <meshtastic/mesh.pb.h>
 
 #define MAX_PAYLOAD_SIZE 255
 #define SLOT_TIME 50
@@ -32,6 +32,8 @@ extern SX1262 radio;
 extern int transmission_state;
 extern bool is_scanning;
 
+uint32_t encode_position_precision(uint32_t);
+uint32_t decode_position_precision(uint32_t);
 uint16_t calculate_packet_delay(float);
 uint8_t encode_flags(MeshNetwork_PacketFlags*);
 void decode_flags(uint8_t, MeshNetwork_PacketFlags*);
